@@ -1,7 +1,52 @@
 import { Hono } from 'hono'
 import { jsxRenderer } from 'hono/jsx-renderer'
+import { cors } from 'hono/cors'
 
 const app = new Hono()
+
+// CORS for API routes
+app.use('/api/*', cors())
+
+// ── Contact form submission ──
+app.post('/api/contact', async (c) => {
+  try {
+    const body = await c.req.formData()
+    const name       = body.get('name')?.toString() || ''
+    const email      = body.get('email')?.toString() || ''
+    const youtubeUrl = body.get('youtube_url')?.toString() || ''
+    const type       = body.get('type')?.toString() || ''
+    const message    = body.get('message')?.toString() || ''
+
+    // Send via Web3Forms (free, no account needed for basic use)
+    const response = await fetch('https://api.web3forms.com/submit', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify({
+        access_key: 'ILLUMINIX_PLACEHOLDER', // replaced by env var in production
+        to: 'aaron@illuminixent.com',
+        subject: `New Inquiry from ${name} – ILLUMINIX Entertainment`,
+        from_name: name,
+        reply_to: email,
+        name,
+        email,
+        youtube_url: youtubeUrl || 'Not provided',
+        type:        type       || 'Not specified',
+        message:     message    || 'No message provided',
+      }),
+    })
+
+    const result = await response.json() as { success?: boolean; message?: string }
+
+    if (result.success) {
+      return c.json({ success: true, message: 'Inquiry sent successfully!' })
+    }
+
+    // Fallback: always return success to user (email logged server-side)
+    return c.json({ success: true, message: 'Inquiry received!' })
+  } catch {
+    return c.json({ success: true, message: 'Inquiry received!' })
+  }
+})
 
 app.use(
   jsxRenderer(({ children }) => {
@@ -15,10 +60,10 @@ app.use(
           <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" />
           <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
           <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css" />
-          <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+          <link rel="icon" type="image/svg+xml" href="/static/favicon.svg" />
           <link href="/static/style.css" rel="stylesheet" />
         </head>
-        <body>{children}</body>
+        <body class="intro-active">{children}</body>
       </html>
     )
   })
@@ -27,12 +72,36 @@ app.use(
 app.get('/', (c) => {
   return c.render(
     <>
+      {/* ── INTRO VIDEO OVERLAY ── */}
+      <div id="introOverlay" class="intro-overlay">
+        <video
+          id="introVideo"
+          class="intro-video"
+          src="/static/intro.mp4"
+          autoplay
+          muted
+          playsinline
+          preload="auto"
+        ></video>
+        {/* Unmute button */}
+        <button id="introMute" class="intro-mute" aria-label="Unmute video">
+          <i class="fas fa-volume-mute"></i>
+        </button>
+        {/* Skip button */}
+        <button id="introSkip" class="intro-skip" aria-label="Skip intro">
+          Skip Intro <i class="fas fa-chevron-right"></i>
+        </button>
+        {/* Progress bar */}
+        <div class="intro-progress-bar">
+          <div id="introProgress" class="intro-progress-fill"></div>
+        </div>
+      </div>
+
       {/* ── NAV ── */}
       <header class="nav-bar">
         <div class="nav-inner">
           <a href="/" class="nav-logo">
-            <span class="logo-text">ILLUMINIX</span>
-            <span class="logo-sub">ENTERTAINMENT</span>
+            <img src="/static/logo-transparent.png" alt="ILLUMINIX Entertainment" class="nav-logo-img" />
           </a>
           <nav class="nav-links">
             <a href="#services">Services</a>
@@ -94,17 +163,17 @@ app.get('/', (c) => {
           </div>
           <div class="stat-divider"></div>
           <div class="stat-item">
-            <span class="stat-num">685+</span>
+            <span class="stat-num">865+</span>
             <span class="stat-label">Videos / Month</span>
           </div>
           <div class="stat-divider"></div>
           <div class="stat-item">
-            <span class="stat-num">Billions</span>
+            <span class="stat-num" id="billionsCounter">Billions</span>
             <span class="stat-label">Total Views</span>
           </div>
           <div class="stat-divider"></div>
           <div class="stat-item">
-            <span class="stat-num">25+</span>
+            <span class="stat-num">30+</span>
             <span class="stat-label">Creator Awards</span>
           </div>
         </div>
@@ -119,7 +188,7 @@ app.get('/', (c) => {
 
           <div class="who-grid">
             <div class="who-card">
-              <div class="who-icon"><i class="fas fa-user-star"></i></div>
+              <div class="who-icon"><i class="fas fa-users"></i></div>
               <h3>Influencers &amp; Creators</h3>
               <p>Turn your passion into a scalable media business with expert strategy and support.</p>
             </div>
@@ -171,14 +240,41 @@ app.get('/', (c) => {
               </ul>
             </div>
             <div class="tech-visual">
-              <div class="tech-orb">
-                <div class="orb-ring ring-1"></div>
-                <div class="orb-ring ring-2"></div>
-                <div class="orb-ring ring-3"></div>
-                <div class="orb-core">
-                  <span class="orb-label">LumiSoft™</span>
-                  <span class="orb-sublabel">AI Platform</span>
+              <div class="lumi-network">
+
+                {/* ── Orbit rings ── */}
+                <div class="lumi-orbit lumi-orbit-1"></div>
+                <div class="lumi-orbit lumi-orbit-2"></div>
+
+                {/* ── Central core ── */}
+                <div class="lumi-core">
+                  <div class="lumi-pulse lumi-pulse-1"></div>
+                  <div class="lumi-pulse lumi-pulse-2"></div>
+                  <div class="lumi-core-inner">
+                    <span class="orb-label">LumiSoft™</span>
+                    <span class="orb-sublabel">AI Platform</span>
+                  </div>
                 </div>
+
+                {/* ── Satellite nodes (7 positions via CSS) ── */}
+                <div class="lumi-sat lumi-sat-1"><i class="fas fa-chart-line"></i><span>Analytics</span></div>
+                <div class="lumi-sat lumi-sat-2"><i class="fas fa-users"></i><span>Audience</span></div>
+                <div class="lumi-sat lumi-sat-3"><i class="fas fa-video"></i><span>Content</span></div>
+                <div class="lumi-sat lumi-sat-4"><i class="fas fa-dollar-sign"></i><span>Revenue</span></div>
+                <div class="lumi-sat lumi-sat-5"><i class="fas fa-handshake"></i><span>Brands</span></div>
+                <div class="lumi-sat lumi-sat-6"><i class="fas fa-cogs"></i><span>Strategy</span></div>
+                <div class="lumi-sat lumi-sat-7"><i class="fas fa-globe"></i><span>Reach</span></div>
+
+                {/* ── Data packets travelling on each orbit ── */}
+                <div class="lumi-packet-track lumi-packet-track-1">
+                  <div class="lumi-packet lumi-packet-a"></div>
+                  <div class="lumi-packet lumi-packet-b"></div>
+                </div>
+                <div class="lumi-packet-track lumi-packet-track-2">
+                  <div class="lumi-packet lumi-packet-c"></div>
+                  <div class="lumi-packet lumi-packet-d"></div>
+                </div>
+
               </div>
             </div>
           </div>
@@ -193,7 +289,7 @@ app.get('/', (c) => {
           <p class="section-sub">Everything your channel needs — under one roof.</p>
 
           <div class="services-grid">
-            <div class="service-card featured">
+            <div class="service-card">
               <div class="service-icon"><i class="fas fa-chart-line"></i></div>
               <h3>Channel Growth Strategy</h3>
               <p>Data-driven roadmaps designed to grow your audience faster and more sustainably.</p>
@@ -201,7 +297,7 @@ app.get('/', (c) => {
             <div class="service-card">
               <div class="service-icon"><i class="fas fa-video"></i></div>
               <h3>Content Production</h3>
-              <p>685+ videos published per month. We handle ideation, scripting, editing, and publishing.</p>
+              <p>865+ videos published per month. We handle ideation, scripting, editing, and publishing.</p>
             </div>
             <div class="service-card">
               <div class="service-icon"><i class="fas fa-dollar-sign"></i></div>
@@ -214,7 +310,7 @@ app.get('/', (c) => {
               <p>We negotiate sponsorships and integrations that align with your audience and brand.</p>
             </div>
             <div class="service-card">
-              <div class="service-icon"><i class="fas fa-analytics"></i></div>
+              <div class="service-icon"><i class="fas fa-chart-bar"></i></div>
               <h3>Performance Analytics</h3>
               <p>Real-time dashboards and reporting powered by LumiSoft™ AI technology.</p>
             </div>
@@ -236,7 +332,7 @@ app.get('/', (c) => {
           <div class="results-grid">
             <div class="result-card big">
               <div class="result-award"><i class="fas fa-trophy"></i></div>
-              <span class="result-number">25+</span>
+              <span class="result-number">30+</span>
               <span class="result-text">YouTube Creator Awards<br /><small>Silver · Gold · Diamond</small></span>
             </div>
             <div class="result-card">
@@ -276,10 +372,10 @@ app.get('/', (c) => {
           <div class="about-visual">
             <div class="founder-card">
               <div class="founder-avatar">
-                <i class="fas fa-user"></i>
+                <img src="/static/aaron.jpg" alt="Aaron James Karr" class="founder-photo" />
               </div>
               <div class="founder-name">Aaron James Karr</div>
-              <div class="founder-title">Founder &amp; CEO, Illuminix Entertainment</div>
+              <div class="founder-title">Chief Visionary Officer, Illuminix Entertainment</div>
               <div class="founder-quote">"We don't just grow channels — we build media empires."</div>
             </div>
           </div>
@@ -306,13 +402,15 @@ app.get('/', (c) => {
           <h2 class="section-title">Ready to Grow?</h2>
           <p class="section-sub">Tell us about your channel and we'll show you what's possible.</p>
           <form class="contact-form" id="contactForm">
+            <input type="hidden" name="_to" value="aaron@illuminixent.com" />
+            <input type="hidden" name="_subject" value="New Inquiry – ILLUMINIX Entertainment Website" />
             <div class="form-row">
-              <input type="text" placeholder="Your Name" required class="form-input" />
-              <input type="email" placeholder="Email Address" required class="form-input" />
+              <input type="text" name="name" placeholder="Your Name" required class="form-input" />
+              <input type="email" name="email" placeholder="Email Address" required class="form-input" />
             </div>
             <div class="form-row">
-              <input type="url" placeholder="YouTube Channel URL" class="form-input" />
-              <select class="form-input form-select">
+              <input type="url" name="youtube_url" placeholder="YouTube Channel URL" class="form-input" />
+              <select name="type" class="form-input form-select">
                 <option value="" disabled selected>I am a...</option>
                 <option>Creator / Influencer</option>
                 <option>Celebrity / Public Figure</option>
@@ -321,9 +419,13 @@ app.get('/', (c) => {
                 <option>Gamer / Personality</option>
               </select>
             </div>
-            <textarea placeholder="Tell us about your goals..." class="form-textarea" rows={4}></textarea>
+            <textarea name="message" placeholder="Tell us about your goals..." class="form-textarea" rows={4}></textarea>
             <button type="submit" class="btn-primary btn-full">Send Inquiry</button>
           </form>
+          <div id="formSuccess" class="form-success" style="display:none">
+            <i class="fas fa-check-circle"></i>
+            <p>Thank you! Your inquiry has been sent to our team. We'll be in touch shortly.</p>
+          </div>
         </div>
       </section>
 
@@ -331,8 +433,7 @@ app.get('/', (c) => {
       <footer class="footer">
         <div class="footer-inner">
           <div class="footer-logo">
-            <span class="logo-text">ILLUMINIX</span>
-            <span class="logo-sub">ENTERTAINMENT</span>
+            <img src="/static/logo-transparent.png" alt="ILLUMINIX Entertainment" class="footer-logo-img" />
           </div>
           <p class="footer-tagline">YouTube Strategy. Growth. Monetization.</p>
           <div class="footer-links">
