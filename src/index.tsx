@@ -344,12 +344,8 @@ app.get('/', (c) => {
           </div>
           <div class="about-visual">
             <div class="founder-card">
-              <div class="founder-card-inner">
-                <img src="/static/silver-plaque.png" alt="YouTube Silver Play Button – Illuminix" class="plaque-img" />
-                <div class="founder-avatar">
-                  <img src="/static/aaron.jpg" alt="Aaron James Karr" class="founder-photo" />
-                </div>
-                <img src="/static/gold-plaque.png" alt="YouTube Gold Play Button – Illuminix" class="plaque-img" />
+              <div class="founder-avatar">
+                <img src="/static/aaron.jpg" alt="Aaron James Karr" class="founder-photo" />
               </div>
               <div class="founder-name">Aaron James Karr</div>
               <div class="founder-title">Chief Visionary Officer, Illuminix Entertainment</div>

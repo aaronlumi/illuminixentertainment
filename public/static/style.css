@@ -882,27 +882,6 @@ a  { text-decoration: none; color: inherit; }
 }
 .badge i { color: var(--gold); font-size: .85em; }
 
-/* ── Founder card inner row: plaque | photo | plaque ── */
-.founder-card-inner {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 24px;
-  margin-bottom: 24px;
-}
-
-.plaque-img {
-  width: 140px;
-  flex-shrink: 0;
-  filter: drop-shadow(0 8px 24px rgba(0,0,0,.55));
-  transition: transform 0.35s ease, filter 0.35s ease;
-}
-.plaque-img:first-child:hover {
-  transform: scale(1.07) rotate(-2deg);
-}
-.plaque-img:last-child:hover {
-  transform: scale(1.07) rotate(2deg);
-}
 
 .founder-card {
   background: var(--dark);
@@ -1202,14 +1181,6 @@ a  { text-decoration: none; color: inherit; }
   .about-layout {
     grid-template-columns: 1fr;
     gap: 48px;
-  }
-
-  .founder-card-inner {
-    gap: 14px;
-  }
-
-  .plaque-img {
-    width: 80px;
   }
 
   .form-row { grid-template-columns: 1fr; }
