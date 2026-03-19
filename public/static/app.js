@@ -2,12 +2,24 @@
    VIDEO HERO — autoplay + mute toggle
    ═══════════════════════════════════════════════════════════ */
 (function () {
-  const video    = document.getElementById('heroVideo');
-  const muteBtn  = document.getElementById('videoMute');
+  const video   = document.getElementById('heroVideo');
+  const muteBtn = document.getElementById('videoMute');
   if (!video || !muteBtn) return;
 
-  // Ensure muted autoplay (browsers require it)
+  // ── Point video to the range-aware server on port 3001 ──
+  // Sandbox:    3000-ID.sandbox.novita.ai  →  3001-ID.sandbox.novita.ai
+  // localhost   :3000                      →  :3001
+  // Production  (Cloudflare Pages)         →  /static/intro.mp4 (native range support)
+  const h = window.location.hostname;
+  if (h.endsWith('.sandbox.novita.ai')) {
+    video.src = 'https://' + h.replace(/^\d+/, '3001') + '/intro.mp4';
+  } else if (h === 'localhost' || h === '127.0.0.1') {
+    video.src = 'http://' + h + ':3001/intro.mp4';
+  }
+  // else: keep /static/intro.mp4 set in HTML (Cloudflare Pages natively supports ranges)
+
   video.muted = true;
+  video.load();
   video.play().catch(() => {});
 
   // Mute / unmute toggle
