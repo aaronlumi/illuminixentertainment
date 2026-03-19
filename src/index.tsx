@@ -77,8 +77,6 @@ app.get('/', (c) => {
         <video
           id="introVideo"
           class="intro-video"
-          src="/static/intro.mp4"
-          autoplay
           muted
           playsinline
           preload="auto"

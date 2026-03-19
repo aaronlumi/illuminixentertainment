@@ -13,11 +13,23 @@
   // Lock scroll while intro plays
   document.body.classList.add('intro-active');
 
-  // Attempt autoplay with sound first; fall back to muted
-  video.muted = true;
-  video.play().catch(() => {});
+  // ── Dismiss overlay ──
+  function dismiss() {
+    overlay.classList.add('hiding');
+    document.body.classList.remove('intro-active');
+    video.pause();
+    video.src = '';
+    overlay.addEventListener('transitionend', () => {
+      overlay.classList.add('hidden');
+    }, { once: true });
+    // Fallback in case transitionend doesn't fire
+    setTimeout(() => overlay.classList.add('hidden'), 1200);
+  }
 
-  // ── Mute toggle ──
+  // Skip button
+  skipBtn.addEventListener('click', dismiss);
+
+  // Mute toggle
   muteBtn.addEventListener('click', () => {
     video.muted = !video.muted;
     muteBtn.innerHTML = video.muted
@@ -25,32 +37,41 @@
       : '<i class="fas fa-volume-up"></i>';
   });
 
-  // ── Progress bar ──
+  // Progress bar
   video.addEventListener('timeupdate', () => {
     if (!video.duration) return;
-    const pct = (video.currentTime / video.duration) * 100;
-    progress.style.width = pct + '%';
+    progress.style.width = ((video.currentTime / video.duration) * 100) + '%';
   });
-
-  // ── Dismiss overlay ──
-  function dismiss() {
-    overlay.classList.add('hiding');
-    document.body.classList.remove('intro-active');
-    // Remove from DOM after transition ends
-    overlay.addEventListener('transitionend', () => {
-      overlay.classList.add('hidden');
-    }, { once: true });
-  }
 
   // Auto-dismiss when video ends
   video.addEventListener('ended', dismiss);
 
-  // Skip button
-  skipBtn.addEventListener('click', dismiss);
+  // ── Build video URL: video server runs on port 3001 ──
+  // Replaces port in sandbox URL (e.g. 3000-abc.sandbox.novita.ai → 3001-abc.sandbox.novita.ai)
+  // Falls back to same-origin /static/intro.mp4 on production
+  function getVideoUrl() {
+    const host = window.location.hostname;
+    const port = window.location.port;
 
-  // Also dismiss on click/tap of the overlay itself (but not buttons)
-  overlay.addEventListener('click', (e) => {
-    if (e.target === overlay || e.target === video) dismiss();
+    // Sandbox pattern: PORT-SANDBOXID.sandbox.novita.ai  (sandbox ID may contain dashes)
+    if (host.match(/^\d+-.+\.sandbox\.novita\.ai$/)) {
+      return 'https://' + host.replace(/^\d+-/, '3001-') + '/intro.mp4';
+    }
+    // Local dev: localhost:3000
+    if (host === 'localhost' || host === '127.0.0.1') {
+      return 'http://localhost:3001/intro.mp4';
+    }
+    // Production (Cloudflare Pages) — use same origin static file
+    return '/static/intro.mp4';
+  }
+
+  // Set video src and play
+  const videoUrl = getVideoUrl();
+  video.src = videoUrl;
+  video.muted = true;
+  video.load();
+  video.play().catch(() => {
+    // If autoplay blocked, still show overlay — user can click skip
   });
 })();
 

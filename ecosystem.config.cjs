@@ -11,6 +11,14 @@ module.exports = {
       watch: false,
       instances: 1,
       exec_mode: 'fork'
+    },
+    {
+      name: 'illuminix-video',
+      script: '/home/user/webapp/video-server.mjs',
+      interpreter: 'node',
+      watch: false,
+      instances: 1,
+      exec_mode: 'fork'
     }
   ]
 }
