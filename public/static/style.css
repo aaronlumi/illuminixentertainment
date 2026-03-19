@@ -1134,83 +1134,73 @@ a  { text-decoration: none; color: inherit; }
 }
 
 /* =========================================================
-   INTRO VIDEO OVERLAY
+   VIDEO HERO  (first thing visitor sees)
    ========================================================= */
-
-/* Lock body scroll while intro is active */
-body.intro-active {
+.video-hero {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+  min-height: 480px;
   overflow: hidden;
-}
-
-.intro-overlay {
-  position: fixed;
-  inset: 0;
-  z-index: 9999;
   background: #000;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: opacity 0.8s ease, visibility 0.8s ease;
 }
 
-.intro-overlay.hiding {
-  opacity: 0;
-  visibility: hidden;
-  pointer-events: none;
-}
-
-.intro-overlay.hidden {
-  display: none;
-}
-
-.intro-video {
+/* The video fills the full viewport */
+.video-hero-player {
+  position: absolute;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
   display: block;
 }
 
-/* ── Skip button ── */
-.intro-skip {
+/* Soft gradient at the bottom so it melts into the nav */
+.video-hero-fade {
   position: absolute;
-  bottom: 48px;
-  right: 40px;
-  background: rgba(255,255,255,0.12);
-  color: #fff;
-  border: 1px solid rgba(255,255,255,0.3);
-  border-radius: 50px;
-  padding: 10px 22px;
-  font-size: .88rem;
-  font-weight: 600;
-  font-family: 'Inter', sans-serif;
-  letter-spacing: .04em;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  transition: background .2s, border-color .2s, transform .2s;
-  opacity: 0;
-  animation: fadeInBtn 0.6s ease 2s forwards;
-}
-.intro-skip:hover {
-  background: rgba(255,255,255,0.22);
-  border-color: rgba(255,255,255,0.55);
-  transform: translateY(-2px);
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 28%;
+  background: linear-gradient(to bottom, transparent 0%, #000 100%);
+  pointer-events: none;
 }
 
-/* ── Mute/unmute toggle ── */
-.intro-mute {
+/* Logo centred over the video */
+.video-hero-logo {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
+  animation: vhLogoIn 1.2s ease 0.3s both;
+}
+.video-hero-logo img {
+  width: clamp(200px, 38vw, 480px);
+  filter: drop-shadow(0 4px 32px rgba(0,0,0,.7));
+}
+
+@keyframes vhLogoIn {
+  from { opacity: 0; transform: scale(0.92) translateY(16px); }
+  to   { opacity: 1; transform: scale(1)    translateY(0);    }
+}
+
+/* Mute / unmute button — bottom-left */
+.video-hero-mute {
   position: absolute;
-  bottom: 48px;
-  left: 40px;
-  width: 44px;
-  height: 44px;
-  background: rgba(255,255,255,0.12);
-  color: #fff;
-  border: 1px solid rgba(255,255,255,0.3);
+  bottom: 80px;
+  left: 36px;
+  z-index: 3;
+  width: 46px;
+  height: 46px;
   border-radius: 50%;
+  background: rgba(0,0,0,0.45);
+  border: 1.5px solid rgba(255,255,255,0.35);
+  color: #fff;
   font-size: 1rem;
   cursor: pointer;
   display: flex;
@@ -1220,33 +1210,54 @@ body.intro-active {
   -webkit-backdrop-filter: blur(8px);
   transition: background .2s, border-color .2s, transform .2s;
   opacity: 0;
-  animation: fadeInBtn 0.6s ease 2s forwards;
+  animation: vhFadeUp 0.5s ease 1.8s forwards;
 }
-.intro-mute:hover {
-  background: rgba(255,255,255,0.22);
-  border-color: rgba(255,255,255,0.55);
-  transform: translateY(-2px);
+.video-hero-mute:hover {
+  background: rgba(0,94,184,0.55);
+  border-color: rgba(255,255,255,0.7);
+  transform: scale(1.08);
 }
 
-/* ── Progress bar ── */
-.intro-progress-bar {
+/* Scroll hint — bottom-centre */
+.video-hero-scroll {
   position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 3px;
-  background: rgba(255,255,255,0.15);
+  bottom: 28px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  color: rgba(255,255,255,0.55);
+  font-size: .72rem;
+  font-weight: 500;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  pointer-events: none;
+  opacity: 0;
+  animation: vhFadeUp 0.5s ease 2s forwards;
 }
-.intro-progress-fill {
-  height: 100%;
-  width: 0%;
-  background: linear-gradient(90deg, #005EB8, #1a7fd4);
-  transition: width 0.25s linear;
+.video-hero-scroll i {
+  font-size: .8rem;
+  animation: vhBounce 1.8s ease-in-out infinite;
 }
 
-@keyframes fadeInBtn {
-  from { opacity: 0; transform: translateY(8px); }
-  to   { opacity: 1; transform: translateY(0);   }
+@keyframes vhFadeUp {
+  from { opacity: 0; transform: translateX(-50%) translateY(10px); }
+  to   { opacity: 1; transform: translateX(-50%) translateY(0);    }
+}
+/* scroll-hint icon doesn't need the translateX */
+.video-hero-scroll i { animation: vhBounce 1.8s ease-in-out infinite; }
+@keyframes vhBounce {
+  0%, 100% { transform: translateY(0);   }
+  50%       { transform: translateY(5px); }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .video-hero-mute  { bottom: 70px; left: 20px; }
+  .video-hero-logo img { width: clamp(160px, 60vw, 320px); }
 }
 
 /* =========================================================

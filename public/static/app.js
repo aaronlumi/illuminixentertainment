@@ -1,62 +1,22 @@
 /* ═══════════════════════════════════════════════════════════
-   INTRO VIDEO OVERLAY
+   VIDEO HERO — autoplay + mute toggle
    ═══════════════════════════════════════════════════════════ */
 (function () {
-  const overlay  = document.getElementById('introOverlay');
-  const video    = document.getElementById('introVideo');
-  const skipBtn  = document.getElementById('introSkip');
-  const muteBtn  = document.getElementById('introMute');
-  const progress = document.getElementById('introProgress');
+  const video    = document.getElementById('heroVideo');
+  const muteBtn  = document.getElementById('videoMute');
+  if (!video || !muteBtn) return;
 
-  if (!overlay || !video) return;
+  // Ensure muted autoplay (browsers require it)
+  video.muted = true;
+  video.play().catch(() => {});
 
-  // Lock scroll while intro plays
-  document.body.classList.add('intro-active');
-
-  // ── Dismiss overlay ──
-  function dismiss() {
-    overlay.classList.add('hiding');
-    document.body.classList.remove('intro-active');
-    video.pause();
-    video.src = '';
-    setTimeout(() => overlay.classList.add('hidden'), 900);
-  }
-
-  skipBtn.addEventListener('click', dismiss);
-
+  // Mute / unmute toggle
   muteBtn.addEventListener('click', () => {
     video.muted = !video.muted;
     muteBtn.innerHTML = video.muted
       ? '<i class="fas fa-volume-mute"></i>'
       : '<i class="fas fa-volume-up"></i>';
   });
-
-  video.addEventListener('timeupdate', () => {
-    if (!video.duration) return;
-    progress.style.width = ((video.currentTime / video.duration) * 100) + '%';
-  });
-
-  video.addEventListener('ended', dismiss);
-
-  // ── Build video URL pointing to port-3001 range-aware server ──
-  // Sandbox:    3000-SANDBOX_ID.sandbox.novita.ai  → 3001-SANDBOX_ID.sandbox.novita.ai
-  // Localhost:  localhost:3000  → localhost:3001
-  // Production: use same-origin /static/intro.mp4 (Cloudflare Pages supports range natively)
-  const loc  = window.location;
-  let videoUrl;
-  if (loc.hostname.endsWith('.sandbox.novita.ai')) {
-    videoUrl = loc.protocol + '//' + loc.hostname.replace(/^\d+/, '3001') + '/intro.mp4';
-  } else if (loc.hostname === 'localhost' || loc.hostname === '127.0.0.1') {
-    videoUrl = 'http://' + loc.hostname + ':3001/intro.mp4';
-  } else {
-    videoUrl = '/static/intro.mp4';
-  }
-
-  video.src    = videoUrl;
-  video.muted  = true;
-  video.preload = 'auto';
-  video.load();
-  video.play().catch(() => { /* autoplay blocked — skip button still works */ });
 })();
 
 /* ── Nav scroll effect ── */

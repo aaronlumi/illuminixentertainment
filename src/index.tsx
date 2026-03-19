@@ -63,7 +63,7 @@ app.use(
           <link rel="icon" type="image/svg+xml" href="/static/favicon.svg" />
           <link href="/static/style.css" rel="stylesheet" />
         </head>
-        <body class="intro-active">{children}</body>
+        <body>{children}</body>
       </html>
     )
   })
@@ -72,28 +72,33 @@ app.use(
 app.get('/', (c) => {
   return c.render(
     <>
-      {/* ── INTRO VIDEO OVERLAY ── */}
-      <div id="introOverlay" class="intro-overlay">
+      {/* ── VIDEO HERO (top of page, full viewport) ── */}
+      <section class="video-hero" id="videoHero">
         <video
-          id="introVideo"
-          class="intro-video"
+          id="heroVideo"
+          class="video-hero-player"
+          src="/static/intro.mp4"
+          autoplay
           muted
           playsinline
-          preload="none"
+          loop
         ></video>
-        {/* Unmute button */}
-        <button id="introMute" class="intro-mute" aria-label="Unmute video">
+        {/* Gradient fade into the nav/hero below */}
+        <div class="video-hero-fade"></div>
+        {/* Logo centred over video */}
+        <div class="video-hero-logo">
+          <img src="/static/logo-transparent.png" alt="ILLUMINIX Entertainment" />
+        </div>
+        {/* Controls bottom-left */}
+        <button id="videoMute" class="video-hero-mute" aria-label="Toggle sound">
           <i class="fas fa-volume-mute"></i>
         </button>
-        {/* Skip button */}
-        <button id="introSkip" class="intro-skip" aria-label="Skip intro">
-          Skip Intro <i class="fas fa-chevron-right"></i>
-        </button>
-        {/* Progress bar */}
-        <div class="intro-progress-bar">
-          <div id="introProgress" class="intro-progress-fill"></div>
+        {/* Scroll cue */}
+        <div class="video-hero-scroll">
+          <span>Scroll to explore</span>
+          <i class="fas fa-chevron-down"></i>
         </div>
-      </div>
+      </section>
 
       {/* ── NAV ── */}
       <header class="nav-bar">

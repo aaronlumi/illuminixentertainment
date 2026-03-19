@@ -9,17 +9,6 @@ module.exports = {
       instances: 1,
       exec_mode: 'fork',
       autorestart: true
-    },
-    {
-      name: 'illuminix-video',
-      script: '/home/user/webapp/video-server.mjs',
-      interpreter: 'node',
-      watch: false,
-      instances: 1,
-      exec_mode: 'fork',
-      autorestart: true,
-      kill_timeout: 3000,
-      restart_delay: 1000
     }
   ]
 }
