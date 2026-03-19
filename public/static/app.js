@@ -19,17 +19,11 @@
     document.body.classList.remove('intro-active');
     video.pause();
     video.src = '';
-    overlay.addEventListener('transitionend', () => {
-      overlay.classList.add('hidden');
-    }, { once: true });
-    // Fallback in case transitionend doesn't fire
-    setTimeout(() => overlay.classList.add('hidden'), 1200);
+    setTimeout(() => overlay.classList.add('hidden'), 900);
   }
 
-  // Skip button
   skipBtn.addEventListener('click', dismiss);
 
-  // Mute toggle
   muteBtn.addEventListener('click', () => {
     video.muted = !video.muted;
     muteBtn.innerHTML = video.muted
@@ -37,42 +31,32 @@
       : '<i class="fas fa-volume-up"></i>';
   });
 
-  // Progress bar
   video.addEventListener('timeupdate', () => {
     if (!video.duration) return;
     progress.style.width = ((video.currentTime / video.duration) * 100) + '%';
   });
 
-  // Auto-dismiss when video ends
   video.addEventListener('ended', dismiss);
 
-  // ── Build video URL: video server runs on port 3001 ──
-  // Replaces port in sandbox URL (e.g. 3000-abc.sandbox.novita.ai → 3001-abc.sandbox.novita.ai)
-  // Falls back to same-origin /static/intro.mp4 on production
-  function getVideoUrl() {
-    const host = window.location.hostname;
-    const port = window.location.port;
-
-    // Sandbox pattern: PORT-SANDBOXID.sandbox.novita.ai  (sandbox ID may contain dashes)
-    if (host.match(/^\d+-.+\.sandbox\.novita\.ai$/)) {
-      return 'https://' + host.replace(/^\d+-/, '3001-') + '/intro.mp4';
-    }
-    // Local dev: localhost:3000
-    if (host === 'localhost' || host === '127.0.0.1') {
-      return 'http://localhost:3001/intro.mp4';
-    }
-    // Production (Cloudflare Pages) — use same origin static file
-    return '/static/intro.mp4';
+  // ── Build video URL pointing to port-3001 range-aware server ──
+  // Sandbox:    3000-SANDBOX_ID.sandbox.novita.ai  → 3001-SANDBOX_ID.sandbox.novita.ai
+  // Localhost:  localhost:3000  → localhost:3001
+  // Production: use same-origin /static/intro.mp4 (Cloudflare Pages supports range natively)
+  const loc  = window.location;
+  let videoUrl;
+  if (loc.hostname.endsWith('.sandbox.novita.ai')) {
+    videoUrl = loc.protocol + '//' + loc.hostname.replace(/^\d+/, '3001') + '/intro.mp4';
+  } else if (loc.hostname === 'localhost' || loc.hostname === '127.0.0.1') {
+    videoUrl = 'http://' + loc.hostname + ':3001/intro.mp4';
+  } else {
+    videoUrl = '/static/intro.mp4';
   }
 
-  // Set video src and play
-  const videoUrl = getVideoUrl();
-  video.src = videoUrl;
-  video.muted = true;
+  video.src    = videoUrl;
+  video.muted  = true;
+  video.preload = 'auto';
   video.load();
-  video.play().catch(() => {
-    // If autoplay blocked, still show overlay — user can click skip
-  });
+  video.play().catch(() => { /* autoplay blocked — skip button still works */ });
 })();
 
 /* ── Nav scroll effect ── */

@@ -4,13 +4,11 @@ module.exports = {
       name: 'illuminix',
       script: 'npx',
       args: 'wrangler pages dev dist --ip 0.0.0.0 --port 3000',
-      env: {
-        NODE_ENV: 'development',
-        PORT: 3000
-      },
+      env: { NODE_ENV: 'development', PORT: 3000 },
       watch: false,
       instances: 1,
-      exec_mode: 'fork'
+      exec_mode: 'fork',
+      autorestart: true
     },
     {
       name: 'illuminix-video',
@@ -18,7 +16,10 @@ module.exports = {
       interpreter: 'node',
       watch: false,
       instances: 1,
-      exec_mode: 'fork'
+      exec_mode: 'fork',
+      autorestart: true,
+      kill_timeout: 3000,
+      restart_delay: 1000
     }
   ]
 }

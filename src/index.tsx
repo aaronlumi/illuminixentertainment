@@ -79,7 +79,7 @@ app.get('/', (c) => {
           class="intro-video"
           muted
           playsinline
-          preload="auto"
+          preload="none"
         ></video>
         {/* Unmute button */}
         <button id="introMute" class="intro-mute" aria-label="Unmute video">
