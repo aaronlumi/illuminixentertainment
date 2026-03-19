@@ -882,42 +882,26 @@ a  { text-decoration: none; color: inherit; }
 }
 .badge i { color: var(--gold); font-size: .85em; }
 
-/* ── Founder plaques layout ── */
-.founder-plaques-wrap {
+/* ── Founder card inner row: plaque | photo | plaque ── */
+.founder-card-inner {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 20px;
-}
-
-.plaque-side {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 10px;
-  flex-shrink: 0;
+  gap: 24px;
+  margin-bottom: 24px;
 }
 
 .plaque-img {
-  width: 110px;
-  border-radius: 10px;
-  box-shadow: 0 8px 32px rgba(0,0,0,.35);
-  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  width: 140px;
+  flex-shrink: 0;
+  filter: drop-shadow(0 8px 24px rgba(0,0,0,.55));
+  transition: transform 0.35s ease, filter 0.35s ease;
 }
-.plaque-img:hover {
-  transform: scale(1.06) rotate(-1deg);
-  box-shadow: 0 16px 48px rgba(0,0,0,.5);
+.plaque-img:first-child:hover {
+  transform: scale(1.07) rotate(-2deg);
 }
-.plaque-right .plaque-img:hover {
-  transform: scale(1.06) rotate(1deg);
-}
-
-.plaque-label {
-  font-size: .65rem;
-  font-weight: 700;
-  letter-spacing: .1em;
-  text-transform: uppercase;
-  color: var(--gray-3);
+.plaque-img:last-child:hover {
+  transform: scale(1.07) rotate(2deg);
 }
 
 .founder-card {
@@ -1220,12 +1204,12 @@ a  { text-decoration: none; color: inherit; }
     gap: 48px;
   }
 
-  .founder-plaques-wrap {
-    gap: 12px;
+  .founder-card-inner {
+    gap: 14px;
   }
 
   .plaque-img {
-    width: 72px;
+    width: 80px;
   }
 
   .form-row { grid-template-columns: 1fr; }
