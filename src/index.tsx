@@ -72,34 +72,6 @@ app.use(
 app.get('/', (c) => {
   return c.render(
     <>
-      {/* ── VIDEO HERO (top of page, full viewport) ── */}
-      <section class="video-hero" id="videoHero">
-        <video
-          id="heroVideo"
-          class="video-hero-player"
-          src="/static/intro.mp4"
-          autoplay
-          muted
-          playsinline
-          loop
-        ></video>
-        {/* Gradient fade into the nav/hero below */}
-        <div class="video-hero-fade"></div>
-        {/* Logo centred over video */}
-        <div class="video-hero-logo">
-          <img src="/static/logo-transparent.png" alt="ILLUMINIX Entertainment" />
-        </div>
-        {/* Controls bottom-left */}
-        <button id="videoMute" class="video-hero-mute" aria-label="Toggle sound">
-          <i class="fas fa-volume-mute"></i>
-        </button>
-        {/* Scroll cue */}
-        <div class="video-hero-scroll">
-          <span>Scroll to explore</span>
-          <i class="fas fa-chevron-down"></i>
-        </div>
-      </section>
-
       {/* ── NAV ── */}
       <header class="nav-bar">
         <div class="nav-inner">
@@ -126,12 +98,24 @@ app.get('/', (c) => {
         </div>
       </header>
 
-      {/* ── HERO ── */}
+      {/* ── HERO (video background) ── */}
       <section class="hero">
-        <div class="hero-bg">
-          <div class="hero-overlay"></div>
-          <div class="hero-particles" id="particles"></div>
-        </div>
+        {/* Video plays as background */}
+        <video
+          id="heroVideo"
+          class="hero-video-bg"
+          src="/static/intro.mp4"
+          autoplay
+          muted
+          playsinline
+          loop
+        ></video>
+        {/* Dark overlay so text stays readable */}
+        <div class="hero-overlay"></div>
+        {/* Particles on top of video */}
+        <div class="hero-particles" id="particles"></div>
+
+        {/* Hero copy */}
         <div class="hero-content">
           <p class="hero-eyebrow">YouTube Strategy · Growth · Monetization</p>
           <h1 class="hero-title">
@@ -146,6 +130,12 @@ app.get('/', (c) => {
             <a href="#results" class="btn-ghost">See Our Results</a>
           </div>
         </div>
+
+        {/* Mute / unmute button */}
+        <button id="videoMute" class="hero-mute-btn" aria-label="Toggle sound">
+          <i class="fas fa-volume-mute"></i>
+        </button>
+
         <div class="hero-scroll-hint">
           <span>Scroll</span>
           <i class="fas fa-chevron-down"></i>

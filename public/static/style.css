@@ -234,30 +234,63 @@ a  { text-decoration: none; color: inherit; }
   background: var(--black);
 }
 
-.hero-bg {
+/* ── Video fills the full hero ── */
+.hero-video-bg {
   position: absolute;
   inset: 0;
-  background:
-    radial-gradient(ellipse 80% 60% at 50% 0%, rgba(0,94,184,.22) 0%, transparent 70%),
-    radial-gradient(ellipse 60% 40% at 80% 80%, rgba(0,94,184,.14) 0%, transparent 60%),
-    linear-gradient(135deg, #000 0%, #000d1a 50%, #000 100%);
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+  z-index: 0;
+  display: block;
 }
 
+/* Dark overlay keeps text legible */
 .hero-overlay {
   position: absolute;
   inset: 0;
+  background: rgba(0,0,0,.52);
+  z-index: 1;
+}
+
+/* Mute button — bottom-left corner */
+.hero-mute-btn {
+  position: absolute;
+  bottom: 36px;
+  left: 36px;
+  z-index: 4;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
   background: rgba(0,0,0,.45);
+  border: 1.5px solid rgba(255,255,255,.35);
+  color: #fff;
+  font-size: .95rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  transition: background .2s, border-color .2s, transform .15s;
+}
+.hero-mute-btn:hover {
+  background: rgba(0,94,184,.6);
+  border-color: rgba(255,255,255,.7);
+  transform: scale(1.1);
 }
 
 .hero-particles {
   position: absolute;
   inset: 0;
   overflow: hidden;
+  z-index: 2;
 }
 
 .hero-content {
   position: relative;
-  z-index: 2;
+  z-index: 3;
   text-align: center;
   max-width: 820px;
   padding: 0 24px;
@@ -316,6 +349,7 @@ a  { text-decoration: none; color: inherit; }
   letter-spacing: .12em;
   text-transform: uppercase;
   animation: scrollBounce 2s infinite;
+  z-index: 4;
 }
 
 @keyframes scrollBounce {
@@ -1131,133 +1165,6 @@ a  { text-decoration: none; color: inherit; }
   font-size: .78rem;
   color: rgba(255,255,255,.25);
   margin-top: 8px;
-}
-
-/* =========================================================
-   VIDEO HERO  (first thing visitor sees)
-   ========================================================= */
-.video-hero {
-  position: relative;
-  width: 100%;
-  height: 100vh;
-  min-height: 480px;
-  overflow: hidden;
-  background: #000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-/* The video fills the full viewport */
-.video-hero-player {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-}
-
-/* Soft gradient at the bottom so it melts into the nav */
-.video-hero-fade {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  height: 28%;
-  background: linear-gradient(to bottom, transparent 0%, #000 100%);
-  pointer-events: none;
-}
-
-/* Logo centred over the video */
-.video-hero-logo {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  pointer-events: none;
-  animation: vhLogoIn 1.2s ease 0.3s both;
-}
-.video-hero-logo img {
-  width: clamp(200px, 38vw, 480px);
-  filter: drop-shadow(0 4px 32px rgba(0,0,0,.7));
-}
-
-@keyframes vhLogoIn {
-  from { opacity: 0; transform: scale(0.92) translateY(16px); }
-  to   { opacity: 1; transform: scale(1)    translateY(0);    }
-}
-
-/* Mute / unmute button — bottom-left */
-.video-hero-mute {
-  position: absolute;
-  bottom: 80px;
-  left: 36px;
-  z-index: 3;
-  width: 46px;
-  height: 46px;
-  border-radius: 50%;
-  background: rgba(0,0,0,0.45);
-  border: 1.5px solid rgba(255,255,255,0.35);
-  color: #fff;
-  font-size: 1rem;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  transition: background .2s, border-color .2s, transform .2s;
-  opacity: 0;
-  animation: vhFadeUp 0.5s ease 1.8s forwards;
-}
-.video-hero-mute:hover {
-  background: rgba(0,94,184,0.55);
-  border-color: rgba(255,255,255,0.7);
-  transform: scale(1.08);
-}
-
-/* Scroll hint — bottom-centre */
-.video-hero-scroll {
-  position: absolute;
-  bottom: 28px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 3;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  color: rgba(255,255,255,0.55);
-  font-size: .72rem;
-  font-weight: 500;
-  letter-spacing: .12em;
-  text-transform: uppercase;
-  pointer-events: none;
-  opacity: 0;
-  animation: vhFadeUp 0.5s ease 2s forwards;
-}
-.video-hero-scroll i {
-  font-size: .8rem;
-  animation: vhBounce 1.8s ease-in-out infinite;
-}
-
-@keyframes vhFadeUp {
-  from { opacity: 0; transform: translateX(-50%) translateY(10px); }
-  to   { opacity: 1; transform: translateX(-50%) translateY(0);    }
-}
-/* scroll-hint icon doesn't need the translateX */
-.video-hero-scroll i { animation: vhBounce 1.8s ease-in-out infinite; }
-@keyframes vhBounce {
-  0%, 100% { transform: translateY(0);   }
-  50%       { transform: translateY(5px); }
-}
-
-/* Responsive */
-@media (max-width: 768px) {
-  .video-hero-mute  { bottom: 70px; left: 20px; }
-  .video-hero-logo img { width: clamp(160px, 60vw, 320px); }
 }
 
 /* =========================================================
