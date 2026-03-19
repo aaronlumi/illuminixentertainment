@@ -120,10 +120,6 @@ app.get('/', (c) => {
           </div>
         </div>
 
-        <div class="hero-scroll-hint">
-          <span>Scroll</span>
-          <i class="fas fa-chevron-down"></i>
-        </div>
       </section>
 
       {/* ── STATS TICKER ── */}

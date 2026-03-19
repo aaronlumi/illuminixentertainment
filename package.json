@@ -4,12 +4,15 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "wrangler pages dev",
-    "deploy": "npm run build && wrangler pages deploy",
+    "build:cf": "BUILD_TARGET=cloudflare vite build",
+    "build:netlify": "vite build",
+    "preview": "wrangler pages dev dist",
+    "deploy:netlify": "npm run build:netlify && netlify deploy --prod --dir=dist",
     "cf-typegen": "wrangler types --env-interface CloudflareBindings"
   },
   "dependencies": {
-    "hono": "^4.12.8"
+    "hono": "^4.12.8",
+    "@netlify/edge-functions": "^2.11.1"
   },
   "devDependencies": {
     "@hono/vite-build": "^1.2.0",

@@ -1,13 +1,14 @@
-import build from '@hono/vite-build/cloudflare-pages'
+import netlifyBuild from '@hono/vite-build/netlify-functions'
+import cloudflareBuild from '@hono/vite-build/cloudflare-pages'
 import devServer from '@hono/vite-dev-server'
-import adapter from '@hono/vite-dev-server/cloudflare'
 import { defineConfig } from 'vite'
+
+const isNetlify = process.env.BUILD_TARGET !== 'cloudflare'
 
 export default defineConfig({
   plugins: [
-    build(),
+    isNetlify ? netlifyBuild() : cloudflareBuild(),
     devServer({
-      adapter,
       entry: 'src/index.tsx'
     })
   ]
