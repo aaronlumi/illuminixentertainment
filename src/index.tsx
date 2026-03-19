@@ -98,24 +98,13 @@ app.get('/', (c) => {
         </div>
       </header>
 
-      {/* ── HERO (video background) ── */}
+      {/* ── HERO ── */}
       <section class="hero">
-        {/* Video plays as background */}
-        <video
-          id="heroVideo"
-          class="hero-video-bg"
-          src="/static/intro.mp4"
-          autoplay
-          muted
-          playsinline
-          loop
-        ></video>
-        {/* Dark overlay so text stays readable */}
-        <div class="hero-overlay"></div>
-        {/* Particles on top of video */}
-        <div class="hero-particles" id="particles"></div>
+        <div class="hero-bg">
+          <div class="hero-overlay"></div>
+          <div class="hero-particles" id="particles"></div>
+        </div>
 
-        {/* Hero copy */}
         <div class="hero-content">
           <p class="hero-eyebrow">YouTube Strategy · Growth · Monetization</p>
           <h1 class="hero-title">
@@ -130,11 +119,6 @@ app.get('/', (c) => {
             <a href="#results" class="btn-ghost">See Our Results</a>
           </div>
         </div>
-
-        {/* Mute / unmute button */}
-        <button id="videoMute" class="hero-mute-btn" aria-label="Toggle sound">
-          <i class="fas fa-volume-mute"></i>
-        </button>
 
         <div class="hero-scroll-hint">
           <span>Scroll</span>
