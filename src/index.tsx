@@ -329,7 +329,7 @@ app.get('/', (c) => {
         <div class="section-inner about-layout">
           <div class="about-copy">
             <p class="section-eyebrow">Founder-Led Expertise</p>
-            <h2 class="section-title">Meet Aaron James Karr</h2>
+            <h2 class="section-title" style="white-space: nowrap;">Meet Aaron James Karr</h2>
             <p>
               Illuminix was founded and is led by <strong>Aaron James Karr</strong>, one of the world's leading YouTube strategists. The company remains founder-owned and strategy-driven — ensuring every client receives elite-level expertise and time-tested growth systems.
             </p>
