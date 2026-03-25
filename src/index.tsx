@@ -306,11 +306,11 @@ app.get('/', (c) => {
             <div class="result-card big">
               <div class="result-award"><i class="fas fa-trophy"></i></div>
               <span class="result-number">30+</span>
-              <span class="result-text">YouTube Creator Awards<br /><small>Silver · Gold · Diamond</small></span>
+              <span class="result-text">YouTube Creator Awards Achieved<br /><small>Silver · Gold · Diamond</small></span>
             </div>
             <div class="result-card">
               <span class="result-number">1 in 5</span>
-              <span class="result-text">Americans reached every<br />six months</span>
+              <span class="result-text">People worldwide have seen<br />Illuminix-created content<br />every 6 months</span>
             </div>
             <div class="result-card">
               <span class="result-number">200+</span>
