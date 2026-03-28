@@ -375,8 +375,10 @@ app.get('/', (c) => {
           <h2 class="section-title">Ready to Grow?</h2>
           <p class="section-sub">Tell us about your channel and we'll show you what's possible.</p>
           <form class="contact-form" id="contactForm">
-            <input type="hidden" name="_to" value="aaron@illuminixent.com" />
-            <input type="hidden" name="_subject" value="New Inquiry – ILLUMINIX Entertainment Website" />
+            <input type="hidden" name="access_key" value="eb6deb37-dcc2-4485-aa69-63bd5acc3170" />
+            <input type="hidden" name="subject" value="New Inquiry – ILLUMINIX Entertainment Website" />
+            <input type="hidden" name="from_name" value="ILLUMINIX Website" />
+            <input type="hidden" name="redirect" value="false" />
             <div class="form-row">
               <input type="text" name="name" placeholder="Your Name" required class="form-input" />
               <input type="email" name="email" placeholder="Email Address" required class="form-input" />

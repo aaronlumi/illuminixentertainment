@@ -93,7 +93,7 @@ const style = document.createElement('style');
 style.textContent = '.visible{opacity:1!important;transform:translateY(0)!important;}';
 document.head.appendChild(style);
 
-/* ── Contact form ── */
+/* ── Contact form — submits directly to Web3Forms from browser ── */
 const form = document.getElementById('contactForm');
 const successBox = document.getElementById('formSuccess');
 if (form) {
@@ -105,12 +105,16 @@ if (form) {
     btn.disabled = true;
     btn.style.opacity = '0.75';
     try {
-      const res  = await fetch('/api/contact', { method:'POST', body: new FormData(form) });
+      const res  = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Accept': 'application/json' },
+        body: new FormData(form)
+      });
       const data = await res.json();
       if (data.success) {
         form.style.display = 'none';
         if (successBox) successBox.style.display = 'flex';
-      } else throw new Error();
+      } else throw new Error(data.message || 'Failed');
     } catch {
       btn.textContent = 'Something went wrong — try again';
       btn.disabled = false; btn.style.opacity = '1';
