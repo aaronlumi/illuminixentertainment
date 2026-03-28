@@ -22,7 +22,7 @@ app.post('/api/contact', async (c) => {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
       body: JSON.stringify({
-        access_key: 'ILLUMINIX_PLACEHOLDER', // replaced by env var in production
+        access_key: 'eb6deb37-dcc2-4485-aa69-63bd5acc3170',
         to: 'aaron@illuminixent.com',
         subject: `New Inquiry from ${name} – ILLUMINIX Entertainment`,
         from_name: name,
